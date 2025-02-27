@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Content Include=".github\workflows\deploy-to-production.yml" />
       <Content Include=".github\workflows\deploy-to-staging.yml" />
       <Content Include=".github\workflows\docker-publish.yml" />
     </ItemGroup>
