@@ -3,7 +3,7 @@
 on:
   push:
     branches:
-      - main
+      - main  # Trigger workflow når der pushes til main branch
 
 jobs:
   upload-compose-file:
@@ -17,7 +17,7 @@ jobs:
         with:
           host: ${{ vars.PROD_SERVER_IP }}
           username: ${{ vars.PROD_SERVER_USERNAME }}
-          key: ${{ secrets.PROD_SERVER_SSH_KEY }}
+          key: ${{ secrets.PROD_SERVER_SSH_KEY }}  # Brug den private SSH-nøgle fra Secrets
           source: "docker-compose.yaml"
           target: production/
 
@@ -30,8 +30,22 @@ jobs:
         with:
           host: ${{ vars.PROD_SERVER_IP }}
           username: ${{ vars.PROD_SERVER_USERNAME }}
-          key: ${{ secrets.PROD_SERVER_SSH_KEY }}
+          key: ${{ secrets.PROD_SERVER_SSH_KEY }}  # Brug den private SSH-nøgle fra Secrets
           script: |
+            # SSH til server og kør docker-compose kommandoer
             cd production
             docker compose pull
-            docker compose up -d
+            docker compose up -d  # Kør docker i detached mode
+
+  setup-ssh:
+    runs-on: ubuntu-latest
+    needs: run-docker-compose
+    steps:
+      - name: Setup SSH agent with private key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.PROD_SERVER_SSH_KEY }}  # Brug den private SSH-nøgle fra GitHub Secrets
+
+      - name: Test SSH Connection
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ vars.PROD_SERVER_IP }} "echo SSH connection successful!" # Test SSH-forbindelsen
