@@ -1,4 +1,7 @@
-﻿name: Build and Push Docker Image
+﻿# This file is placed incorrectly - in order to be a working pipeline it must be placed within the .github/workflows folder in the root of the repository.
+# Since this pipeline has never run I can't provider further feedback.
+
+name: Build and Push Docker Image
 
 on:
   push:
